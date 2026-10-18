@@ -4,6 +4,7 @@ import json
 import time
 import pandas as pd
 import plotly.graph_objects as go
+from streamlit_autorefresh import st_autorefresh
 
 # 1. ตั้งค่าหน้าเว็บแบบเต็มจอ
 st.set_page_config(
@@ -13,7 +14,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. ตกแต่ง UI ด้วย Custom CSS (ฟอนต์ Prompt + การ์ดเรืองแสงสไตล์ศูนย์ควบคุม)
+# 2. ตั้งค่าการรีเฟรชหน้าจออัตโนมัติทุกๆ 1 วินาทีเพื่อให้นาฬิกาวิ่งแบบเรียลไทม์
+st_autorefresh(interval=1000, limit=None, key="realtime_clock")
+
+# 3. ตกแต่ง UI ด้วย Custom CSS (ฟอนต์ Prompt + การ์ดเรืองแสงสไตล์ศูนย์ควบคุม)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
@@ -55,7 +59,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# 3. ระบบจัดการ MQTT เบื้องหลัง (Singleton Background Worker)
+# 4. ระบบจัดการ MQTT เบื้องหลัง (Singleton Background Worker)
 # ---------------------------------------------------------------------------
 @st.cache_resource
 def init_mqtt_store():
@@ -77,8 +81,9 @@ def init_mqtt_store():
             if msg.topic == "traffic/dashboard_ui":
                 store["ai_data"] = payload
                 store["closed_loop_data"] = None
+                current_live_timestamp = time.strftime("%H:%M:%S")
                 store["event_log"].insert(0, {
-                    "เวลา": payload["timestamp"],
+                    "เวลา": current_live_timestamp,
                     "เวลากักไฟ (s)": payload["tp"],
                     "รถสะสมรวม (คัน)": payload["physics"]["q_accumulated"],
                     "แผน AI (C1,C2,C3)": f"{payload['plan'][0]}s, {payload['plan'][1]}s, {payload['plan'][2]}s",
@@ -103,9 +108,15 @@ def init_mqtt_store():
 store = init_mqtt_store()
 
 # ---------------------------------------------------------------------------
-# 4. แถบเมนูด้านซ้าย (Sidebar Status & System Info)
+# 5. แถบเมนูด้านซ้าย (Sidebar - จัดให้นาฬิกาอยู่บนสุด)
 # ---------------------------------------------------------------------------
 with st.sidebar:
+    # 🌟 ย้ายนาฬิกามาไว้บนสุดตรงนี้
+    st.markdown("## ⏰ เวลาปัจจุบัน")
+    current_time_live = time.strftime("%H:%M:%S")
+    st.markdown(f"<h1 style='text-align: center; color: #00d4ff; background: #161b26; padding: 10px; border-radius: 10px; border: 1px solid #2e3b52; margin: 0;'>{current_time_live}</h1>", unsafe_allow_html=True)
+    st.markdown("---")
+
     st.markdown("## 🛠️ สถานะระบบ (System Status)")
     if store["connected"]:
         st.success("🟢 **MQTT Broker:** ออนไลน์\n(`broker.hivemq.com`)")
@@ -141,7 +152,7 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------------------------
-# 5. แบนเนอร์หัวข้อหลัก (Main Header Banner)
+# 6. แบนเนอร์หัวข้อหลัก (Main Header Banner)
 # ---------------------------------------------------------------------------
 st.markdown("""
 <div class="main-banner">
@@ -151,7 +162,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# 6. ส่วนแสดงผลหลัก (Main Dashboard Content)
+# 7. ส่วนแสดงผลหลัก (Main Dashboard Content)
 # ---------------------------------------------------------------------------
 if store["ai_data"] is None:
     st.info("💡 **ระบบพร้อมรับข้อมูลแล้ว!** กดปุ่มสีแดง (`btn_emg`) ในวงจร Wokwi เพื่อเริ่มจำลองเหตุการณ์รถพยาบาลวิ่งผ่านได้เลย")
@@ -327,7 +338,3 @@ else:
                     )
                 }
             )
-
-# รีเฟรชหน้าจออัตโนมัติทุก 2 วินาที
-time.sleep(2)
-st.rerun()
