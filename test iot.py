@@ -4,6 +4,7 @@ import json
 import time
 import pandas as pd
 import plotly.graph_objects as go
+from streamlit_autorefresh import st_autorefresh
 
 # 1. ตั้งค่าหน้าเว็บแบบเต็มจอ
 st.set_page_config(
@@ -13,7 +14,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. ตกแต่ง UI ด้วย Custom CSS (ฟอนต์ Prompt + การ์ดเรืองแสงสไตล์ศูนย์ควบคุม)
+# 2. ตั้งค่าการรีเฟรชหน้าจออัตโนมัติทุกๆ 1 วินาทีเพื่อให้นาฬิกาวิ่งแบบเรียลไทม์
+st_autorefresh(interval=1000, limit=None, key="realtime_clock")
+
+# 3. ตกแต่ง UI ด้วย Custom CSS (ฟอนต์ Prompt + การ์ดเรืองแสงสไตล์ศูนย์ควบคุม)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
@@ -55,7 +59,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# 3. ระบบจัดการ MQTT เบื้องหลัง (Singleton Background Worker)
+# 4. ระบบจัดการ MQTT เบื้องหลัง (Singleton Background Worker)
 # ---------------------------------------------------------------------------
 @st.cache_resource
 def init_mqtt_store():
@@ -103,9 +107,14 @@ def init_mqtt_store():
 store = init_mqtt_store()
 
 # ---------------------------------------------------------------------------
-# 4. แถบเมนูด้านซ้าย (Sidebar Status & System Info)
+# 5. แถบเมนูด้านซ้าย (Sidebar Status & Real-Time Clock)
 # ---------------------------------------------------------------------------
 with st.sidebar:
+    st.markdown("## ⏰ เวลาปัจจุบัน (Real-Time)")
+    current_time_live = time.strftime("%H:%M:%S")
+    st.markdown(f"<h2 style='text-align: center; color: #00d4ff; margin: 0;'>{current_time_live}</h2>", unsafe_allow_html=True)
+    st.markdown("---")
+
     st.markdown("## 🛠️ สถานะระบบ (System Status)")
     if store["connected"]:
         st.success("🟢 **MQTT Broker:** ออนไลน์\n(`broker.hivemq.com`)")
@@ -141,7 +150,7 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------------------------
-# 5. แบนเนอร์หัวข้อหลัก (Main Header Banner)
+# 6. แบนเนอร์หัวข้อหลัก (Main Header Banner)
 # ---------------------------------------------------------------------------
 st.markdown("""
 <div class="main-banner">
@@ -151,7 +160,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# 6. ส่วนแสดงผลหลัก (Main Dashboard Content)
+# 7. ส่วนแสดงผลหลัก (Main Dashboard Content)
 # ---------------------------------------------------------------------------
 if store["ai_data"] is None:
     st.info("💡 **ระบบพร้อมรับข้อมูลแล้ว!** กดปุ่มสีแดง (`btn_emg`) ในวงจร Wokwi เพื่อเริ่มจำลองเหตุการณ์รถพยาบาลวิ่งผ่านได้เลย")
@@ -257,9 +266,10 @@ else:
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
             value=phys["pct_saved"],
-            number={'suffix': "%", 'font': {'size': 36, 'color': '#00e676'}},
+            domain={'x': [0.05, 0.95], 'y': [0.15, 0.90]},
+            number={'suffix': "%", 'font': {'size': 38, 'color': '#00e676'}},
             gauge={
-                'axis': {'range': [0, 100]},
+                'axis': {'range': [0, 100], 'tickwidth': 1},
                 'bar': {'color': "#00d4ff"},
                 'steps': [
                     {'range': [0, 40], 'color': "rgba(255, 75, 75, 0.25)"},
@@ -271,7 +281,7 @@ else:
         fig_gauge.update_layout(
             template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
-            margin=dict(l=20, r=20, t=30, b=10),
+            margin=dict(l=30, r=35, t=10, b=10),
             height=330
         )
         st.plotly_chart(fig_gauge, use_container_width=True)
@@ -326,7 +336,3 @@ else:
                     )
                 }
             )
-
-# รีเฟรชหน้าจออัตโนมัติทุก 2 วินาที
-time.sleep(2)
-st.rerun()
