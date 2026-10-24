@@ -12,7 +12,7 @@ TH_TIMEZONE = timezone(timedelta(hours=7))
 
 # 2. ตั้งค่าหน้าเว็บแบบเต็มจอ
 st.set_page_config(
-    page_title="Smart Traffic AIoT Control Center",
+    page_title="Intelligent Queue Rebalancing & Traffic Control",
     page_icon="🚦",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -160,8 +160,8 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 st.markdown("""
 <div class="main-banner">
-    <h1>🚦 ศูนย์ควบคุมและฟื้นฟูสัญญาณไฟจราจรอัจฉริยะ (AIoT Digital Twin)</h1>
-    <p>ระบบสมองกล AI เกลี่ยสัญญาณไฟ 3 รอบหลังเหตุการณ์รถฉุกเฉิน แบบวงจรปิด (Closed-Loop Multi-Cycle Recovery)</p>
+    <h1>🚦 แบบจำลองระบบควบคุมและปรับสมดุลแถวคอยจราจรอัจฉริยะหลังการแทรกสัญญาณไฟของรถฉุกเฉิน</h1>
+    <p>Intelligent Queue Rebalancing and Traffic Control System Simulation Post-Emergency Vehicle Preemption</p>
 </div>
 """, unsafe_allow_html=True)
 
