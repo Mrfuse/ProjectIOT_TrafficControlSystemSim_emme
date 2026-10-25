@@ -764,17 +764,19 @@ def build_traffic_animation_html(ai_data, cl_data, event_seq):
         ctx.textAlign = 'right';
         ctx.fillText(`MAIN ROAD (ฝั่งสวนกลับ) ⬅`, canvas.width - 18, roadMainY + roadMainH - 10);
 
-        // -------------------------------------------------------------------
-        // อัปเดตและวาดรถทั้ง 4 ทิศทาง (ไม่มีการทับซ้อน 100%)
-        // -------------------------------------------------------------------
+# แทนที่ฟังก์ชัน renderLoop หรือช่วงวาดรถสายหลักใน test iot.py ด้วยชุดโค้ดนี้:
+
+        # -------------------------------------------------------------------
+        # อัปเดตและวาดรถสายหลักแบบแยกเลนชัดเจน (เลนใครเลนมัน ไม่วิ่งสวนเลน)
+        # -------------------------------------------------------------------
         const mainSpeed = 1.6 + (qm / 60.0) * 1.4;
         const mainCanGo = (st.lights.mg === 1 || st.lights.my === 1);
         const sideCanGo = (st.lights.sg === 1);
 
         if (!paused) {
-            // ทิศที่ 1: สายหลัก ซ้าย -> ขวา (หยุดก่อนเส้นม้าลายซ้ายที่ x = roadSideX - 62)
+            // เลนบน (วิ่งจากซ้ายไปขวา)
             updateHorizontalLane(eastCars, 1, mainCanGo, roadSideX - 62, mainSpeed);
-            // ทิศที่ 2: สายหลัก ขวา -> ซ้าย (หยุดก่อนเส้นม้าลายขวาที่ x = roadSideX + roadSideW + 24)
+            // เลนล่าง (วิ่งจากขวาไปซ้าย)
             updateHorizontalLane(westCars, -1, mainCanGo, roadSideX + roadSideW + 24, mainSpeed);
 
             if (sideCanGo) {
@@ -784,15 +786,15 @@ def build_traffic_animation_html(ai_data, cl_data, event_seq):
             }
         }
 
-        // วาดรถสายหลัก ซ้าย -> ขวา (ยกเว้นตอนรถพยาบาลวิ่งทับเลนบน)
+        // วาดรถเลนบน (ซ้าย ➔ ขวา) อยู่เหนือเส้นแบ่งเลนกลางถนน
         eastCars.forEach(c => {
             if (st.group === 'PREEMPT') return;
-            drawVehicleDir(c.x, roadMainY + 13, 38, 22, c.color, 'E', false);
+            drawVehicleDir(c.x, roadMainY + 10, 38, 20, c.color, 'E', false);
         });
 
-        // วาดรถสายหลัก ขวา -> ซ้าย
+        // วาดรถเลนล่าง (ขวา ➔ ซ้าย) อยู่ใต้เส้นแบ่งเลนกลางถนน
         westCars.forEach(c => {
-            drawVehicleDir(c.x, roadMainY + 61, 38, 22, c.color, 'W', false);
+            drawVehicleDir(c.x, roadMainY + roadMainH - 30, 38, 20, c.color, 'W', false);
         });
 
         // วาดรถพยาบาลวิ่งแทรกไฟในช่วง PREEMPT
