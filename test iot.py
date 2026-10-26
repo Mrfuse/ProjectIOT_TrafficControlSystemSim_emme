@@ -14,7 +14,7 @@ TH_TIMEZONE = timezone(timedelta(hours=7))
 # 2. ตั้งค่าหน้าเว็บแบบ Wide Screen (ซ่อน Sidebar แบบเดิมเพื่อใช้ Top Command Bar สมัยใหม่)
 st.set_page_config(
     page_title="Intelligent Queue Rebalancing and Traffic Control System Simulation Post-Emergency Vehicle Preemption",
-    page_icon="⚡",
+    page_icon="🚑",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -457,7 +457,7 @@ def build_4phase_animation_html(ai_data, cl_data, event_seq):
     <div class="cockpit-shell">
         <div class="cockpit-header">
             <div class="cockpit-title">
-                <span>⚡ 4-PHASE SMART INTERSECTION DIGITAL TWIN (ทางตรง + เลี้ยวขวาอิสระ 12 LEDs)</span>
+                <span>🚑 4-PHASE SMART INTERSECTION DIGITAL TWIN (ทางตรง + เลี้ยวขวาอิสระ 12 LEDs)</span>
                 <span id="phaseBadge" class="phase-tag">INITIALIZING...</span>
             </div>
             <div class="ctrl-group">
@@ -1258,7 +1258,7 @@ else:
 st.markdown(f"""
 <div class="os-navbar">
     <div class="os-brand">
-        <div class="os-logo-badge">⚡</div>
+        <div class="os-logo-badge">🚑</div>
         <div class="os-title-group">
             <h1>Intelligent Queue Rebalancing and Traffic Control System Simulation Post-Emergency Vehicle Preemption</h1>
             <p>แบบจำลองระบบควบคุมและปรับสมดุลแถวคอยจราจรอัจฉริยะหลังการแทรกสัญญาณไฟของรถฉุกเฉิน</p>
