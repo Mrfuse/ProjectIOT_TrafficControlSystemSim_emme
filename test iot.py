@@ -13,7 +13,7 @@ TH_TIMEZONE = timezone(timedelta(hours=7))
 
 # 2. ตั้งค่าหน้าเว็บแบบ Wide Screen (ซ่อน Sidebar แบบเดิมเพื่อใช้ Top Command Bar สมัยใหม่)
 st.set_page_config(
-    page_title="AERO-TRAFFIC OS | 4-Phase AIoT Intersection Control",
+    page_title="Intelligent Queue Rebalancing and Traffic Control System Simulation Post-Emergency Vehicle Preemption",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed"
