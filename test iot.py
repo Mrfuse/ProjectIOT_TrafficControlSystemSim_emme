@@ -1260,8 +1260,8 @@ st.markdown(f"""
     <div class="os-brand">
         <div class="os-logo-badge">⚡</div>
         <div class="os-title-group">
-            <h1>AERO-TRAFFIC OS // 4-Phase Smart Intersection & Queue Rebalancing</h1>
-            <p>ระบบควบคุมสี่แยกไฟจราจรอัจฉริยะ 4 เฟส (ทางตรง + เลี้ยวขวาอิสระ 12 LEDs) และปรับสมดุลแถวคอยหลังรถฉุกเฉินแทรกสัญญาณไฟ</p>
+            <h1>Intelligent Queue Rebalancing and Traffic Control System Simulation Post-Emergency Vehicle Preemption</h1>
+            <p>แบบจำลองระบบควบคุมและปรับสมดุลแถวคอยจราจรอัจฉริยะหลังการแทรกสัญญาณไฟของรถฉุกเฉิน</p>
         </div>
     </div>
     <div class="os-telemetry-pills">
