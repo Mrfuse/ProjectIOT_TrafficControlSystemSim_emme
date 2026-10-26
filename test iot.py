@@ -1281,7 +1281,7 @@ anim_html = build_4phase_animation_html(
     store["closed_loop_data"],
     store["event_seq"]
 )
-components.html(anim_html, height=595, scrolling=False)
+components.html(anim_html, height=615, scrolling=False)
 
 # ---------------------------------------------------------------------------
 # 9. ส่วนแสดงผล Bento KPI Cards & Interactive Analytics
